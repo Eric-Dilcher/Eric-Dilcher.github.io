@@ -1,18 +1,296 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
     <title>Eric Dilcher's GitHub pages</title>
-    <link href="styles/app.css" rel="stylesheet" type="text/css">
+    <link href="./styles/app.css" rel="stylesheet" type="text/css" />
+    <style>
+      .wrapper {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+        display: flex;
+        gap: 1rem;
+        flex-direction: column;
+        align-items: center;
+      }
+      @media screen and (max-width: 600px) {
+        .wrapper {
+          padding: 1rem;
+        }
+      }
+      .radio-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        font-size: 1rem;
+      }
+      @media screen and (max-width: 600px) {
+        .radio-group {
+          flex-direction: column;
+          gap: 0;
+        }
+      }
+      #animal-image {
+        border: 3px solid black;
+        border-radius: 20px;
+        max-height: 200px;
+      }
+      @media screen and (max-width: 600px) {
+        #animal-image {
+          max-height: 150px;
+        }
+      }
+      #name-display {
+        font-size: 10rem;
+        text-transform: uppercase;
+        max-width: 100vw;
+        word-break: break-all;
+      }
+      @media screen and (max-width: 600px) {
+        #name-display {
+          font-size: 5rem;
+        }
+      }
+      #ascii-display {
+        max-width: min(80vw, 600px);
+      }
+      .spin-fly {
+        animation: spinFly 4s forwards;
+      }
+
+      @keyframes spinFly {
+        0% {
+          transform: rotate(0deg);
+          opacity: 1;
+        }
+        50% {
+          transform: rotate(360deg);
+        }
+        100% {
+          transform: rotate(360deg) translateX(200vw) translateY(-200vh);
+          opacity: 0;
+        }
+      }
+
+      .firework {
+        position: absolute;
+        z-index: -1;
+        width: 10px;
+        height: 10px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 0, 0, 1) 100%
+        );
+        border-radius: 50%;
+        animation: explode 2s forwards;
+      }
+
+      @keyframes explode {
+        0% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(3);
+          opacity: 0.5;
+        }
+        100% {
+          transform: scale(0);
+          opacity: 0;
+        }
+      }
+    </style>
   </head>
   <body>
-
     <div class="wrapper">
-
       <header>
-        <h1>Nothing to see here... yet</h1>
+        <h1 class="header">🦩Hi, EduFlaming!🦩</h1>
       </header>
+
+      <div class="radio-group">
+        I am a...
+        <div>
+          <input
+            type="radio"
+            id="penguin"
+            name="animal"
+            value="penguin"
+            onclick="changeImage()"
+          />
+          <label for="penguin">Penguin 🐧</label>
+        </div>
+        <div>
+          <input
+            type="radio"
+            id="duck"
+            name="animal"
+            value="duck"
+            onclick="changeImage()"
+          />
+          <label for="duck">Duckling 🐥</label>
+        </div>
+        <div>
+          <input
+            type="radio"
+            id="sparrow"
+            name="animal"
+            value="sparrow"
+            onclick="changeImage()"
+          />
+          <label for="sparrow">Sparrow 🐦</label>
+        </div>
+      </div>
+
+      <div>
+        <label for="name-input">My name is:</label>
+        <input
+          type="text"
+          id="name-input"
+          placeholder="..."
+          oninput="updateName()"
+        />
+      </div>
+
+      <div>
+        <label for="color-input">Pick a color:</label>
+        <input type="color" id="color-input" oninput="changeColor()" />
+      </div>
+
+      <img id="animal-image" src="" alt="Animal Image" style="display: none" />
+      <h2 id="name-display"></h2>
+      <button id="animate" style="display: none" onclick="onClick()">
+        Click me for a surprise!
+      </button>
+      <span id="ascii-display"></span>
     </div>
+
+    <script type="text/javascript">
+      function onClick() {
+        for (let i = 0; i < 100; i++) {
+          createFirework();
+          setTimeout(() => {
+            createFirework();
+          }, 200);
+          setTimeout(() => {
+            createFirework();
+          }, 400);
+        }
+        spinFly();
+      }
+      let spinFlyTimeout = null;
+      function spinFly() {
+        if (spinFlyTimeout) {
+          return;
+        }
+        const img = document.getElementById("animal-image");
+        img.classList.add("spin-fly");
+        spinFlyTimeout = setTimeout(() => {
+          spinFlyTimeout = null;
+          img.classList.remove("spin-fly");
+        }, 4000);
+      }
+
+      function toAscii(str) {
+        return str
+          .split("")
+          .map((char) =>
+            char.toUpperCase().charCodeAt(0).toString(2).padStart(8, "0")
+          )
+          .join(" ");
+      }
+
+      function changeImage() {
+        const penguinRadio = document.getElementById("penguin");
+        const duckRadio = document.getElementById("duck");
+        const sparrowRadio = document.getElementById("sparrow");
+        const image = document.getElementById("animal-image");
+
+        // Set the image src based on selected radio button
+        let imageUrl = "";
+        if (penguinRadio.checked) {
+          imageUrl =
+            "https://howtodrawforkids.com/wp-content/uploads/2022/11/how-to-draw-a-baby-penguin.jpg"; // Add penguin image URL here
+        } else if (duckRadio.checked) {
+          imageUrl =
+            "https://howtodrawforkids.com/wp-content/uploads/2023/02/how-to-draw-a-duckling.jpg"; // Add duck image URL here
+        } else if (sparrowRadio.checked) {
+          imageUrl =
+            "https://sketchok.com/images/articles/07-animals/03-birds/08/14.jpg"; // Add sparrow image URL here
+        }
+
+        // Update the image element and show it
+        if (imageUrl) {
+          image.src = imageUrl;
+          image.style.display = "block";
+        } else {
+          image.style.display = "none";
+        }
+        checkButtonVisibility();
+      }
+
+      function updateName() {
+        const nameInput = document.getElementById("name-input");
+        const nameDisplay = document.getElementById("name-display");
+        const asciiDisplay = document.getElementById("ascii-display");
+        nameDisplay.textContent = nameInput.value;
+        if (nameInput.value !== "") {
+          asciiDisplay.textContent =
+            "How the computer reads the name (ASCII):\n" +
+            toAscii(nameInput.value);
+        } else {
+          asciiDisplay.textContent = "";
+        }
+        checkButtonVisibility();
+      }
+
+      function changeColor() {
+        const colorInput = document.getElementById("color-input");
+        const nameDisplay = document.getElementById("name-display");
+        const image = document.getElementById("animal-image");
+        const color = colorInput.value;
+
+        nameDisplay.style.color = color;
+        image.style.borderColor = color;
+
+        checkButtonVisibility();
+      }
+
+      function checkButtonVisibility() {
+        const animateButton = document.getElementById("animate");
+        const imageDisplay =
+          document.getElementById("animal-image").style.display;
+        const nameDisplay = document
+          .getElementById("name-display")
+          .textContent.trim();
+        if (imageDisplay !== "none" && nameDisplay !== "none") {
+          animateButton.style.display = "block";
+        } else {
+          animateButton.style.display = "none";
+        }
+      }
+
+      function createFirework() {
+        const firework = document.createElement("div");
+        firework.className = "firework";
+
+        // Random position
+        const x =
+          Math.random() * window.innerWidth * 0.9 + window.innerWidth * 0.05;
+        const y =
+          Math.random() * window.innerHeight * 0.9 + window.innerHeight * 0.05;
+
+        firework.style.left = `${x}px`;
+        firework.style.top = `${y}px`;
+
+        document.body.appendChild(firework);
+
+        setTimeout(() => {
+          firework.remove(); // Remove after animation
+        }, 2500);
+      }
+    </script>
   </body>
 </html>
